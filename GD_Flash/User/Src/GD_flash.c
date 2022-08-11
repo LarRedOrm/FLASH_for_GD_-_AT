@@ -216,7 +216,7 @@ else
   {
   for (uint8_t i = 0; i < NUM_OF_CONFIG_WORDS; i++)
     {
-    state = fmc_word_program(ADDR_CONFIG_PAGE + 4*i, *(Data+i)); // Program a halfword at the corresponding address.
+    state = fmc_word_program(ADDR_CONFIG_PAGE + 4*i, *(Data+i)); // Program a word at the corresponding address.
     if (state != FMC_READY)
       {
       break;
