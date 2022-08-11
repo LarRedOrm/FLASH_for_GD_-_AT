@@ -18,7 +18,6 @@
 
 //---Includes-------------------------------------------------------------------//
 #include <stdint.h>
-#include "at32f413_flash.h"
 #include "FLASH.h"
 //------------------------------------------------------------------------------//
 
@@ -32,7 +31,7 @@
 //------------------------------------------------------------------------------//
 
 //---Function prototypes--------------------------------------------------------//
-flash_status_enum WriteHalfWord_to_flash  (uint32_t  Address, uint32_t Amount, uint16_t HalfWord);
+flash_status_enum WriteHalfWord_to_flash  (uint32_t  Address, uint16_t HalfWord);
 flash_status_enum WriteHalfWords_to_flash (uint32_t  Address, uint32_t Amount, uint16_t *HalfWords);
 
 //flash_status_type WriteWord_to_flash      (uint32_t Address, uint32_t Word);

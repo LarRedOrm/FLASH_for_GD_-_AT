@@ -42,6 +42,7 @@
 
 //---Includes-------------------------------------------------------------------//
 #include "AT_flash.h"
+#include "at32f413_flash.h"
 //------------------------------------------------------------------------------//
 
 //---Private macros-------------------------------------------------------------//
@@ -82,20 +83,25 @@ uint32_t fmc_page_address_calc (uint32_t Address);
   * @param  Address  - адрес начальной ячейки. Адрес ячейки должен быть выровнен относительно началального адреса страницы по 2 байта.
   * @return HalfWord - полуслово.
   */
-flash_status_enum WriteHalfWord_to_flash (uint32_t Address, uint32_t Amount, uint16_t HalfWord)
+flash_status_enum WriteHalfWord_to_flash (uint32_t Address, uint16_t HalfWord)
 {
 flash_status_type state;
-uint32_t          page_address;
+//uint32_t          page_address;
 
 if (Address == DEFAULT_FLASH_ADDRESS)
   Address = DEF_FLASH_ADDR;
 
+if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
+  return FLASH_WROG_ADDRES;
+/*
 page_address = fmc_page_address_calc(Address); // Расчёт начального адреса страницы.
 if (page_address == WRONG_ADDRESS)
   return FLASH_WROG_ADDRES;
+*/
 
 flash_unlock();                                // Unlock the main FMC operation.
-state = flash_sector_erase(page_address);      // Erase page.
+state = flash_sector_erase(Address);
+//state = flash_sector_erase(page_address);      // Erase page.
 if (state != FLASH_OPERATE_DONE)
   return FLASH_ERROR;
 else
@@ -118,17 +124,22 @@ else
 flash_status_enum WriteHalfWords_to_flash (uint32_t Address, uint32_t Amount, uint16_t *HalfWords)
 {
 flash_status_type state;
-uint32_t       page_address;
+//uint32_t       page_address;
   
 if (Address == DEFAULT_FLASH_ADDRESS)
   Address = DEF_FLASH_ADDR;
 
+if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
+  return FLASH_WROG_ADDRES;
+/*
 page_address = fmc_page_address_calc(Address); // Расчёт начального адреса страницы.
 if (page_address == WRONG_ADDRESS)
   return FLASH_WROG_ADDRES;
+*/
 
 flash_unlock();                                 // Unlock the main FMC operation.
-state = flash_sector_erase(page_address);       // Erase page.
+state = flash_sector_erase(Address);
+//state = flash_sector_erase(page_address);       // Erase page.
 if (state != FLASH_OPERATE_DONE)
   return FLASH_ERROR;
 else
@@ -173,15 +184,22 @@ return DEF_FLASH_ADDR;
 flash_status_type WriteWord_to_flash (uint32_t Address, uint32_t Word)
 {
 flash_status_type state;
-uint32_t          page_address;
+//uint32_t          page_address;
 
 #ifdef DEFAULT_FLASH_ADDRESS
   Address = DEF_FLASH_ADDR;
 #endif
 
-page_address = fmc_page_address_calc(Address); // Расчёт начального адреса страницы.
+if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
+  return FLASH_WROG_ADDRES;
+
+// page_address = fmc_page_address_calc(Address); // Расчёт начального адреса страницы.
+// if (page_address == WRONG_ADDRESS)
+//   return FLASH_WROG_ADDRES;
+
 flash_unlock();                                // Unlock the main FMC operation.
-state = flash_sector_erase(page_address);      // Erase page.
+state = flash_sector_erase(Address);
+//state = flash_sector_erase(page_address);       // Erase page.
 if (state != FLASH_OPERATE_DONE)
   return state;
 else
@@ -201,15 +219,22 @@ return state;
 flash_status_type WriteWords_to_flash (uint32_t  Address, uint32_t Amount, uint32_t *Words)
 {
 flash_status_type state;
-uint32_t       page_address;
+//uint32_t       page_address;
 
 #ifdef DEFAULT_FLASH_ADDRESS
   Address = DEF_FLASH_ADDR;
 #endif
 
-page_address = fmc_page_address_calc (Address); // Расчёт начального адреса страницы.
+if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
+  return FLASH_WROG_ADDRES;
+
+// page_address = fmc_page_address_calc(Address); // Расчёт начального адреса страницы.
+// if (page_address == WRONG_ADDRESS)
+//   return FLASH_WROG_ADDRES;
+
 flash_unlock();                                 // Unlock the main FMC operation.
-state = flash_sector_erase(page_address);      // Erase page.
+state = flash_sector_erase(Address);
+//state = flash_sector_erase(page_address);       // Erase page.
 if (state != FLASH_OPERATE_DONE)
   return state;
 else
@@ -245,7 +270,7 @@ if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
   return WRONG_ADDRESS;
 else
   {
-  while (Address >= (temp_address + PAGE_SIZE - 1) )
+  while (Address > (temp_address + PAGE_SIZE - 1) )
     {
     temp_address = temp_address + PAGE_SIZE;
     }

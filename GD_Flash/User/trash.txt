@@ -1,0 +1,308 @@
+
+
+/**
+  * @brief  Запись слова во flash.
+  * @param  Address - адрес выбранной ячейки. Адрес ячейки должен быть выровнен относительно началального адреса страницы по 4 байта.
+  * @return Word    - слово.
+  */
+/*
+flash_status_enum WriteWord_to_flash (uint32_t Address, uint32_t Word)
+{
+fmc_state_enum state;
+//uint32_t       page_address;
+
+if (Address == DEFAULT_FLASH_ADDRESS)
+  Address = DEF_FLASH_ADDR;
+  
+if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
+  return FLASH_WROG_ADDRES;
+
+// page_address = fmc_page_address_calc(Address); // Расчёт начального адреса страницы.
+// if (page_address == WRONG_ADDRESS)
+//   return FLASH_WROG_ADDRES;
+
+fmc_unlock();                                  // Unlock the main FMC operation.
+state = fmc_page_erase(Address);
+//state = fmc_page_erase(page_address);         // Erase page.
+if (state != FMC_READY)
+  return FLASH_ERROR;
+else
+  state = fmc_word_program(Address, Word); // Program a word at the corresponding address.
+fmc_lock();                                // Lock the main FMC operation.
+
+if (state != FMC_READY)
+  return FLASH_ERROR;
+else
+  return FLASH_OK;
+}
+//------------------------------------------------------------------------------//
+*/
+
+/**
+  * @brief  Запись массива слов во flash.
+  * @param  Address - адрес начальной ячейки. Адрес ячейки должен быть выровнен относительно началального адреса страницы по 4 байта.
+  * @return Word    - указатель типа uint32_t* на массив с данными.
+  */
+/*
+flash_status_enum WriteWords_to_flash (uint32_t  Address, uint32_t Amount, uint32_t *Words)
+{
+fmc_state_enum state;
+//uint32_t       page_address;
+  
+if (Address == DEFAULT_FLASH_ADDRESS)
+  Address = DEF_FLASH_ADDR;
+
+if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
+  return FLASH_WROG_ADDRES;
+
+// page_address = fmc_page_address_calc(Address); // Расчёт начального адреса страницы.
+// if (page_address == WRONG_ADDRESS)
+//   return FLASH_WROG_ADDRES;
+
+fmc_unlock();                                   // Unlock the main FMC operation.
+state = fmc_page_erase(Address);
+//state = fmc_page_erase(page_address);         // Erase page.
+if (state != FMC_READY)
+  return FLASH_ERROR;
+else
+  {
+  for (uint32_t i = 0; i < Amount; i++)
+    {
+    state = fmc_word_program(Address + 4*i, (uint32_t)*(Words + i)); // Program a word at the corresponding address.
+    if (state != FMC_READY)
+      {
+      break;
+      }
+    }
+  }
+fmc_lock(); // Lock the main FMC operation.
+
+if (state != FMC_READY)
+  return FLASH_ERROR;
+else
+  return FLASH_OK;
+}
+//------------------------------------------------------------------------------//
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//---Private functions----------------------------------------------------------//
+/**
+  * @brief   Определение параметров FLASH. 
+  * @details Функция определения параметров FLASH в используемом контроллере.          \n 
+  *          В контроллерах GD32F103R размер FLASH варьируется от 16 KB (GD32F103R4T6) \n 
+  *          до 3072 KB (GD32F103RKT6).
+  *          Размер FLASH определяет параметр плотность (density):
+  *          - Medium-density devices are GD32F101xx and GD32F103xx microcontrollers which the flash
+  *            memory density ranges from 16 to 128 Kbytes.
+  *          - High-density devices are GD32F101xx and GD32F103xx microcontrollers which the flash
+  *            memory density ranges from 256 to 512 Kbytes.
+  *          - Extra-density devices are GD32F101xx and GD32F103xx microcontrollers which the flash
+  *            memory density larger than 512 Kbytes.
+  *
+  *          Параметр density опрелеляет организацию FLASH памяти. \n
+  *
+  *
+  * **Организация FLASH памяти для Medium-density** \n 
+  * (GD32F10x_MD)
+  *
+  * | Block              | Name             | Address Range              | Size (bytes)      |
+  * | ------------------ | :--------------: | :------------------------: | :---------------: |
+  * | Main Flash Block   | Page 0           | 0x0800 0000 - 0x0800 03FF  | 1 KB              |
+  * | ^                  | Page 1           | 0x0800 0400 - 0x0800 07FF  | 1 KB              |
+  * | ^                  | Page 2           | 0x0800 0800 - 0x0800 0BFF  | 1 KB              |
+  * | ^                  | ...              | ...                        | ...               |
+  * | ^                  | Page 127         | 0x0801 FC00 - 0x0801 FFFF  | 1 KB              |
+  * | Information Block  | Boot loader area | 0x1FFF F000 - 0x1FFF F7FF  | 2 KB              |
+  * | Option bytes Block | Option bytes     | 0x1FFF F800 - 0x1FFF F80F  | 16 B              |
+  *  \n
+  *
+  * **Организация FLASH памяти для High-density и Extra-density** \n 
+  * (GD32F10x_CL,_GD32F10x_HD,_GD32F10x_XD)
+  *
+  * | Block              | Density     | Name             | Address Range              | Size (bytes)      |
+  * | -------------------| :---------: | :--------------: | :------------------------: | :---------------: |
+  * | Main Flash Block   | CL, HD, XD  | Page 0           | 0x0800 0000 - 0x0800 07FF  | 2 KB              |
+  * | ^                  | ^           | Page 1           | 0x0800 0800 - 0x0800 0FFF  | 2 KB              |
+  * | ^                  | ^           | Page 2           | 0x0800 1000 - 0x0800 17FF  | 2 KB              |
+  * | ^                  | ^           | ...              | ...                        | ...               |
+  * | ^                  | ^           | Page 255         | 0x0807 F800 - 0x0807 FFFF  | 2 KB              |
+  * | ^                  | ^           | Page 256         | 0x0808 0000 - 0x0808 0FFF  | 4 KB              |
+  * | ^                  | ^           | Page 257         | 0x0808 1000 - 0x0808 1FFF  | 4 KB              |
+  * | ^                  | ^           | ...              | ...                        | ...               |
+  * | ^                  | ^           | Page 895         | 0x082F F000 - 0x082F FFFF  | 4 KB              |
+  * | Information Block  | GD32F10x_HD | Boot loader area | 0x1FFF F000 - 0x1FFF F7FF  | 2 KB              |
+  * | ^                  | GD32F10x_XD | ^                | 0x1FFF E000 - 0x1FFF F7FF  | 6 KB              |
+  * | ^                  | GD32F10x_CL | ^                | 0x1FFF B000 - 0x1FFF F7FF  | 18 KB             |
+  * | Option bytes Block | CL, HD, XD  | Option bytes     | 0x1FFF F800 - 0x1FFF F80F  | 16 B              |
+  *  \n
+  *
+  *
+  * @param   FLASH_param - указатель на труктуру типа FLASH_parameters_struct.
+  * @return  ErrStatus   - результат выполнения.
+  */
+ErrStatus Definition_of_FLASH_parameters (FLASH_parameters_struct* FLASH_param)
+{
+//FLASH_param->Number_of_1KBpages = 0;          // Количество страниц FLASH памяти размером в 1 KB.
+//FLASH_param->Number_of_2KBpages = 0;          // Количество страниц FLASH памяти размером в 2 KB.
+//FLASH_param->Number_of_4KBpages = 0;          // Количество страниц FLASH памяти размером в 4 KB.
+FLASH_param->Page0_StartAddr    = PAGE0_ADDR; // Адрес начала первой страницы.
+FLASH_param->Addr_Bootloader    = PAGE0_ADDR; // Начальный адрес секции BootLoader.
+  
+if (FMC_SIZE == DENSITY_MEDIUM_128)
+  FLASH_param->Density = MEDIUM;
+else if ( FMC_SIZE == DENSITY_HIGH_256   ||
+          FMC_SIZE == DENSITY_HIGH_384   ||
+          FMC_SIZE == DENSITY_HIGH_512 )
+  FLASH_param->Density = HIGH;
+else if ( FMC_SIZE == DENSITY_EXTRA_768  ||
+          FMC_SIZE == DENSITY_EXTRA_1024 ||
+          FMC_SIZE == DENSITY_EXTRA_2048 ||
+          FMC_SIZE == DENSITY_EXTRA_3072 )
+  FLASH_param->Density = EXTRA;
+else
+  return ERROR;
+
+if (FLASH_param->Density == MEDIUM)
+  {
+//  FLASH_param->Number_of_1KBpages = FMC_SIZE;                                                                       // Количество страниц FLASH памяти размером в 1 KB.
+//  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + PAGE_SIZE_1KB * FLASH_param->Number_of_1KBpages; // Адрес последнего байта в последней странице.
+  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + PAGE_SIZE_1KB * FMC_SIZE;                        // Адрес последнего байта в последней странице.
+  FLASH_param->Addr_MainProgram   = FLASH_param->Addr_Bootloader    + MEMSIZE_BOOTLOADER   * PAGE_SIZE_1KB;         // Начальный адрес секции MainProgram.
+  FLASH_param->Addr_DowloadBuffer = FLASH_param->Addr_MainProgram   + MEMSIZE_MAIN_PROGRAM * PAGE_SIZE_1KB;         // Начальный адрес секции DowloadBuffer.
+  FLASH_param->Addr_ConfigPage    = FLASH_param->Addr_DowloadBuffer + MEMSIZE_CONFIG_PAGE  * PAGE_SIZE_1KB;         // Начальный адрес секции ConfigPage.
+  FLASH_param->Addr_RO_Constans   = FLASH_param->Addr_ConfigPage    + MEMSIZE_RO_CONSTANS  * PAGE_SIZE_1KB;         // Начальный адрес секции RO_Constans.
+  }
+else if (FLASH_param->Density == HIGH)
+  {
+//  FLASH_param->Number_of_1KBpages = 0;                                                                              // Количество страниц FLASH памяти размером в 1 KB.
+//  FLASH_param->Number_of_2KBpages = FMC_SIZE / 2;                                                                   // Количество страниц FLASH памяти размером в 2 KB.
+//  FLASH_param->Number_of_4KBpages = 0;                                                                              // Количество страниц FLASH памяти размером в 4 KB.
+//  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + PAGE_SIZE_2KB * FLASH_param->Number_of_2KBpages; // Адрес последнего байта в последней странице.
+
+  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + PAGE_SIZE_2KB * (FMC_SIZE / 2); // Адрес последнего байта в последней странице.
+  FLASH_param->Addr_MainProgram   = FLASH_param->Addr_Bootloader    + (MEMSIZE_BOOTLOADER   / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции MainProgram.
+  FLASH_param->Addr_DowloadBuffer = FLASH_param->Addr_MainProgram   + (MEMSIZE_MAIN_PROGRAM / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции DowloadBuffer.
+  FLASH_param->Addr_ConfigPage    = FLASH_param->Addr_DowloadBuffer + (MEMSIZE_CONFIG_PAGE  / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции ConfigPage.
+  FLASH_param->Addr_RO_Constans   = FLASH_param->Addr_ConfigPage    + (MEMSIZE_RO_CONSTANS  / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции RO_Constans.
+  }
+else if (FMC_SIZE > DENSITY_HIGH_MAX)
+  {
+  FLASH_param->Density = EXTRA;
+  FLASH_param->Number_of_1KBpages = 0;                                                                                 // Количество страниц FLASH памяти размером в 1 KB.
+  FLASH_param->Number_of_2KBpages = 256;                                                                               // Количество страниц FLASH памяти размером 2 KB в микроконтроллерах серии GD32F103R Extra-density равно 256.
+  FLASH_param->Number_of_4KBpages = (FMC_SIZE - DENSITY_HIGH_MAX)/4;                                                   // Количество страниц FLASH памяти размером в 4 KB.
+  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + (PAGE_SIZE_2KB * FLASH_param->Number_of_2KBpages) + // Адрес последнего байта в последней странице.
+                                                                   (PAGE_SIZE_4KB * FLASH_param->Number_of_4KBpages); 
+  }
+else
+  {
+  return ERROR;
+  }
+return SUCCESS;
+  
+  
+  
+  
+
+  
+  
+  
+  
+/*
+//if ( (FMC_SIZE > DENSITY_MEDIUM_MIN - 1) && (FMC_SIZE < DENSITY_MEDIUM_MAX + 1) )
+if (FMC_SIZE == DENSITY_MEDIUM_MAX)
+  {
+  FLASH_param->Density            = MEDIUM;
+  FLASH_param->Number_of_1KBpages = FMC_SIZE;                                                                       // Количество страниц FLASH памяти размером в 1 KB.
+  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + PAGE_SIZE_1KB * FLASH_param->Number_of_1KBpages; // Адрес последнего байта в последней странице.
+  FLASH_param->Addr_MainProgram   = FLASH_param->Addr_Bootloader    + MEMSIZE_BOOTLOADER   * PAGE_SIZE_1KB;         // Начальный адрес секции MainProgram.
+  FLASH_param->Addr_DowloadBuffer = FLASH_param->Addr_MainProgram   + MEMSIZE_MAIN_PROGRAM * PAGE_SIZE_1KB;         // Начальный адрес секции DowloadBuffer.
+  FLASH_param->Addr_ConfigPage    = FLASH_param->Addr_DowloadBuffer + MEMSIZE_CONFIG_PAGE  * PAGE_SIZE_1KB;         // Начальный адрес секции ConfigPage.
+  FLASH_param->Addr_RO_Constans   = FLASH_param->Addr_ConfigPage    + MEMSIZE_RO_CONSTANS  * PAGE_SIZE_1KB;         // Начальный адрес секции RO_Constans.
+  }
+else if ( (FMC_SIZE > DENSITY_HIGH_MIN - 1) && (FMC_SIZE < DENSITY_HIGH_MAX + 1) )
+  {
+  FLASH_param->Density = HIGH;
+  FLASH_param->Number_of_1KBpages = 0;                                                                              // Количество страниц FLASH памяти размером в 1 KB.
+  FLASH_param->Number_of_2KBpages = FMC_SIZE / 2;                                                                   // Количество страниц FLASH памяти размером в 2 KB.
+  FLASH_param->Number_of_4KBpages = 0;                                                                              // Количество страниц FLASH памяти размером в 4 KB.
+  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + PAGE_SIZE_2KB * FLASH_param->Number_of_2KBpages; // Адрес последнего байта в последней странице.
+    
+  FLASH_param->Addr_MainProgram   = FLASH_param->Addr_Bootloader    + (MEMSIZE_BOOTLOADER   / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции MainProgram.
+  FLASH_param->Addr_DowloadBuffer = FLASH_param->Addr_MainProgram   + (MEMSIZE_MAIN_PROGRAM / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции DowloadBuffer.
+  FLASH_param->Addr_ConfigPage    = FLASH_param->Addr_DowloadBuffer + (MEMSIZE_CONFIG_PAGE  / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции ConfigPage.
+  FLASH_param->Addr_RO_Constans   = FLASH_param->Addr_ConfigPage    + (MEMSIZE_RO_CONSTANS  / 2) * PAGE_SIZE_2KB;   // Начальный адрес секции RO_Constans.
+  }
+else if (FMC_SIZE > DENSITY_HIGH_MAX)
+  {
+  FLASH_param->Density = EXTRA;
+  FLASH_param->Number_of_1KBpages = 0;                                                                                 // Количество страниц FLASH памяти размером в 1 KB.
+  FLASH_param->Number_of_2KBpages = 256;                                                                               // Количество страниц FLASH памяти размером 2 KB в микроконтроллерах серии GD32F103R Extra-density равно 256.
+  FLASH_param->Number_of_4KBpages = (FMC_SIZE - DENSITY_HIGH_MAX)/4;                                                   // Количество страниц FLASH памяти размером в 4 KB.
+  FLASH_param->LastPage_EndAddr   = FLASH_param->Page0_StartAddr + (PAGE_SIZE_2KB * FLASH_param->Number_of_2KBpages) + // Адрес последнего байта в последней странице.
+                                                                   (PAGE_SIZE_4KB * FLASH_param->Number_of_4KBpages); 
+  }
+else
+  {
+  return ERROR;
+  }
+return SUCCESS;
+*/
+}
+//------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  * **Manual**
+  * В драйвере реализована запись во flash полуслова - функция WriteHalfWord_to_flash,                           \n 
+  * и запись во flash массива полуслов - WriteHalfWords_to_flash.                                                \n 
+  * Почему именно полуслов и только полуслов? Ответ:                                                             \n 
+  *    AT32F413  - умеет писать во flash по байту (8 бит), по полуслову (16 бит), и по целому слову (32 бита).   \n
+  *    GD32F103  - умеет писать во flash по полуслову (16 бит), и по целому слову (32 бита).                     \n 
+  *    STM32F103 - умеет писать во flash только по полуслову (16 бит).                                           \n 
+  *    Формат записи по полуслову поддерживает большинство микроконтроллеров.                                    \n 
+  *    Надаппаратный драйвер должен быть один для всех микроконтроллеров, поэтому будем предполагать,            \n 
+  *    что в этом драйвере данные для записи будут формироваться с учётом выравнивания только по 2 байта.        \n 
+  *    Таким образом будет обеспечена универсальность надаппаратного драйвера для всех микроконтроллеров.        \n
+  *
+  * В случае, если пользователю надаппаратного драйвера неизвестна структура Flash используемого контроллера,    \n 
+  * и допустимый адрес flash для записиси, соответственно, тоже неизвестен,                                      \n 
+  * возможно использовать макрос DEFAULT_FLASH_ADDRESS.                                                          \n 
+  * При этом запись будет проводиться по адресу заданному по умолчанию.                                          \n 
+  * В качестве значения по умолчанию для GD32F103R выбран адрес начала последней страницы flash.                 \n 
+  * Размер страницы - 2 KB.
+  *
+  * Узнать адрес по умолчанию можно функцией Get_Default_Address.
+
+
+
+
+
+
