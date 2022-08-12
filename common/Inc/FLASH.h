@@ -21,7 +21,7 @@
 //------------------------------------------------------------------------------//
 
 //---Defines--------------------------------------------------------------------//
-#define DEFAULT_FLASH_ADDRESS (uint32_t)0xEE
+#define NUM_OF_CONFIG_WORDS 9U /*!< Количество параметров модуля (в виде 32-битных слов), которые будут записываться в область Config Page. */
 //------------------------------------------------------------------------------//
 
 //---Private types--------------------------------------------------------------//
@@ -50,6 +50,7 @@ typedef struct{
 uint8_t minor; /*!< Минор. */
 uint8_t major; /*!< Мажор. */
 }Version;
+
 
 /**
   * @brief Структура для хранения параметров Modbus.
@@ -93,11 +94,12 @@ uint32_t SerialNumberHW;   /*!< Серийный номер старшее слово.*/
 }RO_Constants_struct;
 //------------------------------------------------------------------------------//
 
+
 //---Function prototypes--------------------------------------------------------//
-flash_status Write_Config_to_flash        (uint32_t *Data);
+flash_status      Write_Config_to_flash        (uint32_t *Data);
 void              Read_Config_from_flash       (Config_struct* Config);
 void              Read_RO_Constants_from_flash (RO_Constants_struct* RO_Constants);
-flash_status Write_Words_to_flash         (uint32_t Address, uint32_t Amount, uint32_t *Words);
+flash_status      Write_Words_to_flash         (uint32_t Address, uint32_t Amount, uint32_t *Words);
 //------------------------------------------------------------------------------//
 
   

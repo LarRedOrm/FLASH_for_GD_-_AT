@@ -386,11 +386,6 @@
           <GroupName>User</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\main.c</FilePath>
-            </File>
-            <File>
               <FileName>GD_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\User\Src\GD_flash.c</FilePath>
@@ -419,6 +414,11 @@
               <FileName>trash.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\trash.txt</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\common\Src\main.c</FilePath>
             </File>
           </Files>
         </Group>

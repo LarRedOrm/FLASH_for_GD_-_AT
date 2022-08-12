@@ -371,7 +371,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>.\Objects\AT_Flash.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -390,11 +390,6 @@
               <FilePath>.\User\Src\AT_flash.c</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\main.c</FilePath>
-            </File>
-            <File>
               <FileName>AT_START_F413_V1.2.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\User\Src\AT_START_F413_V1.2.c</FilePath>
@@ -408,6 +403,11 @@
               <FileName>FLASH.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\common\Src\FLASH.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\common\Src\main.c</FilePath>
             </File>
           </Files>
         </Group>
