@@ -1,5 +1,5 @@
-//#include "GD_32103C-EVAL.h"
-#include "AT_START_F413_V1.2.h"
+#include "GD_32103C-EVAL.h"
+//#include "AT_START_F413_V1.2.h"
 #include "FLASH.h"
 
 
@@ -16,6 +16,7 @@ int main (void)
 {
 Init_MCU();
 
+
 /*
   * **Карта памяти Config Page**
   * Параметр                        | Адрес      | 0x00 | 0x01 | 0x02 | 0x03
@@ -31,6 +32,7 @@ Init_MCU();
   * Параметры Modbus порта 3        | 0x0801F020 | baud | par  | stop | 0xFF
 */
 
+
 Cfg->AddrModule              = 1;
 Cfg->BootloaderVersion.minor = 2;
 Cfg->BootloaderVersion.major = 3;
@@ -44,7 +46,6 @@ Cfg->ModbusPort0Param.reserved_param = 0xEE;
 Write_Config_to_flash((uint32_t*)Cfg);
 
 
-
 /*
   * **Карта памяти RO Constants**
   * Параметр             | Адрес      | 0x00  | 0x01  | 0x02 | 0x03
@@ -54,6 +55,7 @@ Write_Config_to_flash((uint32_t*)Cfg);
   * Серийный номер hw    | 0x0801F808 | 0xFF  | 0xFF  | 0xFF | 0xFF
   * Серийный номер lw    | 0x0801F810 | 0xFF  | 0xFF  | 0xFF | 0xFF
 */
+
 
 RO_Const->ModulType              = 0x12;
 RO_Const->HardwareRevision.minor = 0x34;

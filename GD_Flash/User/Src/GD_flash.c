@@ -159,26 +159,26 @@
 //------------------------------------------------------------------------------//
 
 //---Private macros-------------------------------------------------------------//
-#define PAGE0_ADDR            0x08000000U                        /*!< Адрес начала первой страницы FLASH. */
+#define PAGE0_ADDR            0x08000000U                        /*!< Адрес начала первой страницы FLASH.          */
 #define END_ADDR_OF_LAST_PAGE (PAGE0_ADDR + FMC_SIZE * 1024 - 1) /*!< Адрес последнего байта в последней странице. */
 
 //---Размеры требуемой FLASH памяти в Kbyte для размещения соответствующих областей---//
-#define MEMSIZE_BOOTLOADER       28 /*!< Размер требуемой FLASH памяти в Kbyte. */
-#define MEMSIZE_MAIN_PROGRAM     48 /*!< Размер требуемой FLASH памяти в Kbyte. */
-#define MEMSIZE_DOWNLOAD_BUFFER  48 /*!< Размер требуемой FLASH памяти в Kbyte. */
-#define MEMSIZE_CONFIG_PAGE      2  /*!< Размер требуемой FLASH памяти в Kbyte. */
-#define MEMSIZE_RO_CONSTANS      2  /*!< Размер требуемой FLASH памяти в Kbyte. */
+#define MEMSIZE_BOOTLOADER       28 /*!< Размер требуемой FLASH памяти в Kbyte.       */
+#define MEMSIZE_MAIN_PROGRAM     48 /*!< Размер требуемой FLASH памяти в Kbyte.       */
+#define MEMSIZE_DOWNLOAD_BUFFER  48 /*!< Размер требуемой FLASH памяти в Kbyte.       */
+#define MEMSIZE_CONFIG_PAGE      2  /*!< Размер требуемой FLASH памяти в Kbyte.       */
+#define MEMSIZE_RO_CONSTANS      2  /*!< Размер требуемой FLASH памяти в Kbyte.       */
 //------------------------------------------------------------------------------------//
 
 //---Начальные адреса соответствующих областей во FLASH---//
 #define ADDR_BOOTLOADER       PAGE0_ADDR                                              /*!< Начальный адрес секции BootLoader.                   */
-#define ADDR_MAIN_PROGRAM     (ADDR_BOOTLOADER      + MEMSIZE_BOOTLOADER      * 1024) /*!< 0x08007000U // Начальный адрес секции MainProgram.   */
+#define ADDR_MAIN_PROGRAM     (ADDR_BOOTLOADER      + MEMSIZE_BOOTLOADER      * 1024) /*!< 0x08007000U // Начальный адрес секции MainProgram. Значение 1024 - количество байт в килобайте. */
 #define ADDR_DOWNLOAD_BUFFER  (ADDR_MAIN_PROGRAM    + MEMSIZE_MAIN_PROGRAM    * 1024) /*!< 0x08013000U // Начальный адрес секции DowloadBuffer. */
 #define ADDR_CONFIG_PAGE      (ADDR_DOWNLOAD_BUFFER + MEMSIZE_DOWNLOAD_BUFFER * 1024) /*!< 0x0801F000U // Начальный адрес секции ConfigPage.    */
 #define ADDR_RO_CONSTANS      (ADDR_CONFIG_PAGE     + MEMSIZE_CONFIG_PAGE     * 1024) /*!< 0x0801F800U // Начальный адрес секции RO_Constans.   */
 //--------------------------------------------------------//
 
-#define DEF_FLASH_ADDR (END_ADDR_OF_LAST_PAGE - PAGE_SIZE_2KB + 1 ) /*!< Адрес для записи по умолчанию - адрес начала последней страницы flash (0x803F800). */
+#define DEF_FLASH_ADDR (END_ADDR_OF_LAST_PAGE - PAGE_SIZE_2KB + 1) /*!< Адрес для записи по умолчанию - адрес начала последней страницы flash (0x803F800). */
 
 //#define NUM_OF_CONFIG_WORDS 9U /*!< Количество параметров модуля (в виде 32-битных слов), которые будут записываться в область Config Page. */
 //------------------------------------------------------------------------------//
@@ -272,7 +272,7 @@ fmc_state_enum state;
 if ( (Address < PAGE0_ADDR) || (Address > END_ADDR_OF_LAST_PAGE) )
   return FLASH_WROG_ADDRES;
 
-fmc_unlock();                                 // Unlock the main FMC operation.
+fmc_unlock(); // Unlock the main FMC operation.
 state = fmc_page_erase(Address);
 if (state != FMC_READY)
   return FLASH_ERROR;

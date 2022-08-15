@@ -13,11 +13,8 @@
 **/
 
 //---Includes-------------------------------------------------------------------//
-#include "gd32f10x.h"
-#include "gd32f10x_rcu.h"
-#include "gd32f10x_gpio.h"
-
 #include "GD_32103C-EVAL.h"
+#include "gd32f10x_gpio.h"
 #include "systick.h"
 //------------------------------------------------------------------------------//
 
@@ -53,7 +50,7 @@
 void Init_MCU (void)
 {
 RCU_APB1EN |= RCU_APB1EN_PMUEN; // Enabled power management unit (PMU) clock.
-  
+
 //---Configure the system clock---
 systick_config();
 
@@ -64,15 +61,13 @@ RCU_APB2EN |= RCU_APB2EN_PEEN; // IO port E clock enabled.
 //---PC0, PC2 ---> LED2, LED3---//
 GPIO_CTL0(GPIOC) &= (~( GPIO_CTL0_MD0 | GPIO_CTL0_CTL0 |
                         GPIO_CTL0_MD2 | GPIO_CTL0_CTL2 )); // Clear.
-
 GPIO_CTL0(GPIOC) |= GPIO_MODE_SET(0, (GPIO_MODE_OUT_PP |
                                       GPIO_OSPEED_10MHZ)
                                       & (uint32_t)0x0FU); // GPIO output with push-pull.  
 GPIO_CTL0(GPIOC) |= GPIO_MODE_SET(2, (GPIO_MODE_OUT_PP |
                                       GPIO_OSPEED_10MHZ)
                                       & (uint32_t)0x0FU); // GPIO output with push-pull.  
-//------------------------------//                        
-                        
+//------------------------------//
 //---PE0, PE2 ---> LED4, LED5---//
 GPIO_CTL0(GPIOE) &= (~( GPIO_CTL0_MD0 | GPIO_CTL0_CTL0 |
                         GPIO_CTL0_MD2 | GPIO_CTL0_CTL2 )); // Clear.
@@ -88,7 +83,6 @@ GPIO_CTL0(GPIOE) |= GPIO_MODE_SET(2, (GPIO_MODE_OUT_PP |
 //------------------------------------------------------------------------------//
 
 
-
 void Blink (void)
 {
 GPIO_OCTL(GPIOC) |= GPIO_OCTL_OCTL0;
@@ -96,14 +90,6 @@ delay_1ms(100);
 GPIO_OCTL(GPIOC) &= ~GPIO_OCTL_OCTL0;
 delay_1ms(100);
 }
-
-
-
-
-
-
-
-
 //------------------------------------------------------------------------------//
 
 

@@ -18,18 +18,18 @@
 //------------------------------------------------------------------------------//
 
 //---Private macros-------------------------------------------------------------//
-#define GPIO_MODE_OUTPUT_LARGE_STRENGTH 1 // Output mode, large sourcing/sinking strength.
-#define GPIO_FUNC_OUTPUT_PUSH_PULL      0 // General-purpose push-pull output.
-#define FLOATING_INPUT                  1 // Floating input (reset state).
-#define ALT_FUNC_PUSH_PULL              2 // Alternate function push-pull output.
-#define PULLUP_PULLDOWN_INPUT           2 // Pull-up/pull-down input.
+#define GPIO_MODE_OUTPUT_LARGE_STRENGTH 1 /*!< Output mode, large sourcing/sinking strength. */
+#define GPIO_FUNC_OUTPUT_PUSH_PULL      0 /*!< General-purpose push-pull output.             */
+#define FLOATING_INPUT                  1 /*!< Floating input (reset state).                 */
+#define ALT_FUNC_PUSH_PULL              2 /*!< Alternate function push-pull output.          */
+#define PULLUP_PULLDOWN_INPUT           2 /*!< Pull-up/pull-down input.                      */
 
 #define LED_ON  0
 #define LED_OFF 1
 
 #define MS_TICK (system_core_clock / 1000U)
 
-#define MAX_DELAY 0xFFFFFFFFU // Max delay can be used in mDelay.
+#define MAX_DELAY 0xFFFFFFFFU /*!< Max delay can be used in mDelay. */
 //------------------------------------------------------------------------------//
 
 //---Exported variables---------------------------------------------------------//
@@ -89,13 +89,13 @@ system_core_clock_update();       // Update system_core_clock global variable.
 NVIC_SetPriorityGrouping(NVIC_PRIORITY_GROUP_4); // Set the prigroup[10:8] bits according to nvic_prioritygroup value.
 
 CRM->apb2en_bit.gpiocen = SET;                             // GPIOC clock enable.
-//---Настройка LED2 Red, PC2---//
+//---Настройка LED2 Red, PC2-----//
 GPIOC->cfglr_bit.iomc2 &= 0;                               // Clear mode configuration.
 GPIOC->cfglr_bit.iofc2 &= 0;                               // Clear function configuration.
 GPIOC->cfglr_bit.iomc2 |= GPIO_MODE_OUTPUT_LARGE_STRENGTH; // Set mode configuration    : Output mode, large sourcing/sinking strength.
 GPIOC->cfglr_bit.iofc2 |= GPIO_FUNC_OUTPUT_PUSH_PULL;      // Set function configuration: General-purpose push-pull output.
 GPIOC->odt_bit.odt2     = LED_OFF;
-//-----------------------------//
+//-------------------------------//
 //---Настройка LED3 White, PC3---//
 GPIOC->cfglr_bit.iomc3 &= 0;                               // Clear mode configuration.
 GPIOC->cfglr_bit.iofc3 &= 0;                               // Clear function configuration.

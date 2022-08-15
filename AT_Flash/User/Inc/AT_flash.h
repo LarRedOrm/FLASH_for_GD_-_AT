@@ -3,7 +3,7 @@
   *
   * @file      AT_flash.h
   *
-  * @brief     Header for GD_flash.c file.
+  * @brief     Header for AT_flash.c file.
   *
   * @copyright Copyright (C) 2022 Awada Systems. Все права защищены.
   *

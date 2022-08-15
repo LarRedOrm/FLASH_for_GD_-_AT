@@ -20,7 +20,6 @@
 #include <stdint.h>
 #include "gd32f10x.h"
 #include "FLASH.h"
-
 //------------------------------------------------------------------------------//
 
 //---Defines--------------------------------------------------------------------//
@@ -33,14 +32,14 @@
 //------------------------------------------------------------------------------//
 
 //---Function prototypes--------------------------------------------------------//
-flash_status Write_Config_to_flash  (uint32_t *Data);
-void              Read_Config_from_flash (Config_struct* Config);
-void              Read_RO_Constants_from_flash (RO_Constants_struct* RO_Constants);
-flash_status Write_Words_to_flash (uint32_t Address, uint32_t Amount, uint32_t *Words);
+flash_status  Write_Config_to_flash        (uint32_t *Data);
+void          Read_Config_from_flash       (Config_struct* Config);
+void          Read_RO_Constants_from_flash (RO_Constants_struct* RO_Constants);
+flash_status  Write_Words_to_flash         (uint32_t Address, uint32_t Amount, uint32_t *Words);
 //------------------------------------------------------------------------------//
 
-  
-  
+
 #endif /* __GD_FLASH_H */
+
 
 //***********************************END OF FILE***********************************
