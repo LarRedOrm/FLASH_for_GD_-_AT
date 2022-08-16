@@ -42,17 +42,15 @@
   * @details Настройки тактирования:
   *          Вкл. питание -> internal 8MRC (8MHz) -> external HXTAL (8MHz) -> PLL -> \n 
   *          -> 96MHz -> CK_SYS 96MHz -> AHB 96MHz -> /1 -> APB2 96 MHz              \n 
-  *                                                |                                 \n 
-  *                                                 -> /2 -> APB1 48 MHz
+  *                                               |                                  \n 
+  *                                                -> /2 -> APB1 48 MHz
   * @param   None
   * @return  None
   */
 void Init_MCU (void)
 {
 RCU_APB1EN |= RCU_APB1EN_PMUEN; // Enabled power management unit (PMU) clock.
-
-//---Configure the system clock---
-systick_config();
+systick_config();               // Configure the system clock.
 
 //---Настройка GPIO-----------------------------------------//
 RCU_APB2EN |= RCU_APB2EN_PCEN; // IO port C clock enabled.
