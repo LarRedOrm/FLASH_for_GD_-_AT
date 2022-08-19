@@ -264,8 +264,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\User\Src\GD_flash.c</PathWithFileName>
-      <FilenameWithoutPath>GD_flash.c</FilenameWithoutPath>
+      <PathWithFileName>.\User\Src\FLASH_GD32F103R.c</PathWithFileName>
+      <FilenameWithoutPath>FLASH_GD32F103R.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

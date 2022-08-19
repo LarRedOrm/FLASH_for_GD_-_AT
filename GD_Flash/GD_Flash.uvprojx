@@ -386,9 +386,9 @@
           <GroupName>User</GroupName>
           <Files>
             <File>
-              <FileName>GD_flash.c</FileName>
+              <FileName>FLASH_GD32F103R.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\User\Src\GD_flash.c</FilePath>
+              <FilePath>.\User\Src\FLASH_GD32F103R.c</FilePath>
             </File>
             <File>
               <FileName>GD_32103C-EVAL.c</FileName>

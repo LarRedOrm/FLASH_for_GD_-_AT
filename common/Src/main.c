@@ -43,7 +43,7 @@ Cfg->ModbusPort0Param.baud   = 6;
 Cfg->ModbusPort0Param.par    = 7;
 Cfg->ModbusPort0Param.stop   = 8;
 Cfg->ModbusPort0Param.reserved_param = 0xEE;
-Write_Config_to_flash((uint32_t*)Cfg);
+Write_Config_to_flash(Cfg);
 
 
 /*

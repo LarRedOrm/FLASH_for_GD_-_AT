@@ -14,7 +14,7 @@
   *
   * **Manual**                                                                                                                \n 
   * В драйвере реализованы следующие функции:
-  * - Write_Config_to_flash (uint32_t *Data) - запись во FLASH изменяемых параметров модуля Config Page.                      \n 
+  * - Write_Config_to_flash (Config_struct* Config) - запись во FLASH изменяемых параметров модуля Config Page.               \n 
   *   Изменяемые параметры модуля могут храниться в структуре типа uint32_t или типа Config_struct.                           \n 
   *   Начальныый адрес для записи/чтения изменяемых параметров модуля во/из FLASH определён макросом ADDR_CONFIG_PAGE.
   *
@@ -32,27 +32,29 @@
   *                                                                                                                           \n 
   *
   * **Карта памяти Config Page**
-  * | Параметр                        |   Адрес    | 0x00  | 0x01  | 0x02 | 0x03 |
-  * | ------------------------------- | :--------: | :---: | :---: | :--: | :--: |
-  * | Адрес модуля                    | 0x0801F000 | addr  | 0xFF  | 0xFF | 0xFF |
-  * | Версия загрузчика               | 0x0801F004 | minor | major | 0xFF | 0xFF |
-  * | Версия программы                | 0x0801F008 | minor | major | 0xFF | 0xFF |
-  * | Флаг первого запуска            | 0x0801F00C | flag  | 0xFF  | 0xFF | 0xFF |
-  * | Не используется в модуле Modbus | 0x0801F010 | 0xFF  | 0xFF  | 0xFF | 0xFF |
-  * | Параметры Modbus порта 0        | 0x0801F014 | baud  |  par  | stop | 0xFF |
-  * | Параметры Modbus порта 1        | 0x0801F018 | baud  |  par  | stop | 0xFF |
-  * | Параметры Modbus порта 2        | 0x0801F01C | baud  |  par  | stop | 0xFF |
-  * | Параметры Modbus порта 3        | 0x0801F020 | baud  |  par  | stop | 0xFF |
+  * | Параметр                        |   Адрес    |   0x00   |   0x01   | 0x02 | 0x03 |
+  * | ------------------------------- | :--------: | :------: | :------: | :--: | :--: |
+  * | Адрес модуля                    | 0x0801F000 |   addr   |   0xFF   | 0xFF | 0xFF |
+  * | Скорость CAN                    | 0x0801F004 |          |          |      |      |
+  * | Версия загрузчика               | 0x0801F008 | bl_minor | bl_major | 0xFF | 0xFF |
+  * | Версия программы                | 0x0801F00C | sw_minor | sw_major | 0xFF | 0xFF |
+  * | Флаг первого запуска            | 0x0801F010 |   flag   |   0xFF   | 0xFF | 0xFF |
+  * | Не используется в модуле Modbus | 0x0801F014 |   0xFF   |   0xFF   | 0xFF | 0xFF |
+  * | Параметры Modbus порта 0        | 0x0801F018 |   baud   |    par   | stop | 0xFF |
+  * | Параметры Modbus порта 1        | 0x0801F01C |   baud   |    par   | stop | 0xFF |
+  * | Параметры Modbus порта 2        | 0x0801F020 |   baud   |    par   | stop | 0xFF |
+  * | Параметры Modbus порта 3        | 0x0801F024 |   baud   |    par   | stop | 0xFF |
+  *
   * Страница Config Page содержит параметры модуля, записанные в виде 32-битных слов.
   * \n \n 
   *
   * **Карта памяти RO Constants**
-  * | Параметр           |   Адрес    | 0x00  | 0x01  | 0x02 | 0x03 |
-  * | ------------------ | :--------: | :---: | :---: | :--: | :--: |
-  * | Тип модуля         | 0x0801F800 | class | 0xFF  | 0xFF | 0xFF |
-  * | Аппаратная ревизия | 0x0801F804 | minor | major | 0xFF | 0xFF |
-  * | Серийный номер lw  | 0x0801F808 | 0xFF  | 0xFF  | 0xFF | 0xFF |
-  * | Серийный номер hw  | 0x0801F80C | 0xFF  | 0xFF  | 0xFF | 0xFF |
+  * | Параметр           |   Адрес    |   0x00   |   0x01   | 0x02 | 0x03 |
+  * | ------------------ | :--------: | :------: | :------: | :--: | :--: |
+  * | Тип модуля         | 0x0801F800 |  class   |   0xFF   | 0xFF | 0xFF |
+  * | Аппаратная ревизия | 0x0801F804 | hw_minor | hw_major | 0xFF | 0xFF |
+  * | Серийный номер lw  | 0x0801F808 |   0xFF   |   0xFF   | 0xFF | 0xFF |
+  * | Серийный номер hw  | 0x0801F80C |   0xFF   |   0xFF   | 0xFF | 0xFF |
   *
   * Страница RO Constants содержит параметры модуля, записанные в виде 32-битных слов.
   * \n \n 
@@ -89,10 +91,10 @@
 //---Exported functions---------------------------------------------------------//
 /**
   * @brief   Запись Config во FLASH.
-  * @param   Data - указатель типа uint32_t* на структуру с данными Config.
+  * @param   Config - указатель типа Config_struct* на структуру с данными Config.
   * @return  flash status.
   */
-__weak flash_status Write_Config_to_flash (uint32_t *Data)
+__weak flash_status Write_Config_to_flash (Config_struct* Config)
 {
 return FLASH_ERROR;
 }
@@ -134,6 +136,18 @@ __weak void Read_RO_Constants_from_flash (RO_Constants_struct* RO_Constants)
 __weak flash_status Write_Words_to_flash (uint32_t Address, uint32_t Amount, uint32_t *Words)
 {
 return FLASH_ERROR;
+}
+//------------------------------------------------------------------------------//
+
+
+/**
+  * @brief   Чтение параметра Flash memory density.
+  * @details Чтение значения размера FLASH памяти (Flash memory density) микроконтроллера (STM, GD, AT).
+  * @return  uint16_t - размер FLASH памяти используемого микроконтроллера (STM, GD, AT) в Kbyte.
+  */
+__weak uint16_t Read_MCU_FMD (void)
+{
+return 0;
 }
 //------------------------------------------------------------------------------//
 
